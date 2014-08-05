@@ -113,9 +113,7 @@ void ViewManager::reload_views() {
     QSettings *s = 0x0;
 
     QStringList view_names;
-    //start with any overriding default views in the /etc folder there might be
-    QDir working_dir = QDir::current();
-    QString filename = working_dir.absoluteFilePath("etc/default_gridviews.dtg");
+    QString filename = QString("%1/../share/default_gridviews.dtg").arg(QCoreApplication::applicationDirPath());
     if(QFile::exists(filename)){
         s = new QSettings(filename, QSettings::IniFormat);
         if(s){

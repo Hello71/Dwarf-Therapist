@@ -3,22 +3,8 @@ TARGET = DwarfTherapist
 QT += concurrent \
     script \
     widgets
-CONFIG(debug, debug|release) { 
-    message(Debug Mode)
-    DESTDIR = bin$${DIR_SEPARATOR}debug
-    MOC_DIR = bin$${DIR_SEPARATOR}debug
-    UI_DIR = bin$${DIR_SEPARATOR}debug
-    RCC_DIR = bin$${DIR_SEPARATOR}debug
-    OBJECTS_DIR = bin$${DIR_SEPARATOR}debug
-}
-else { 
-    message(Release Mode)
-    DESTDIR = bin$${DIR_SEPARATOR}release
-    MOC_DIR = bin$${DIR_SEPARATOR}release
-    UI_DIR = bin$${DIR_SEPARATOR}release
-    RCC_DIR = bin$${DIR_SEPARATOR}release
-    OBJECTS_DIR = bin$${DIR_SEPARATOR}release
-}
+CONFIG += debug_and_release \
+    warn_on
 
 QMAKE_CFLAGS += $$(CFLAGS)
 QMAKE_CXXFLAGS += $$(CXXFLAGS)
@@ -30,6 +16,15 @@ INCLUDEPATH += inc \
     inc$${DIR_SEPARATOR}docks \
     ui \
     thirdparty/qtcolorpicker-2.6
+
+Release:DESTDIR = release
+Release:OBJECTS_DIR = release/.obj
+Release:UI_DIR = release/.ui
+
+Debug:DESTDIR = debug
+Debug:OBJECTS_DIR = debug/.obj
+Debug:UI_DIR = debug/.ui
+
 win32 { 
     message(Setting up for Windows)
     RC_FILE = DwarfTherapist.rc
@@ -40,27 +35,28 @@ win32 {
 
     DEFINES += NOMINMAX
 
-     #setup_files.path = $$DESTDIR
-    #setup_files.extra = ROBOCOPY /MIR "etc" ".\\$$DESTDIR\\etc";
+    #setup_files.path = $$DESTDIR
+    #setup_files.extra = ROBOCOPY /MIR "share" ".\\$$DESTDIR\\share";
 
     check_log.path = $$DESTDIR
     check_log.extra = if not exist $$DESTDIR\\log mkdir "$$DESTDIR\\log";
 
     check_dirs.path = $$DESTDIR
-    check_dirs.extra = if not exist $$DESTDIR\\etc\\memory_layouts\\windows mkdir "$$DESTDIR\\etc\\memory_layouts\\windows";
+    check_dirs.extra = if not exist $$DESTDIR\\share\\memory_layouts\\windows mkdir "$$DESTDIR\\share\\memory_layouts\\windows";
 
     copy_game_data.path = $$DESTDIR
-    copy_game_data.extra = copy /Y "etc\\game_data.ini" ".\\$$DESTDIR\\etc";
+    copy_game_data.extra = copy /Y "share\\game_data.ini" ".\\$$DESTDIR\\share";
 
     copy_mem_layouts.path = $$DESTDIR
-    copy_mem_layouts.extra = copy /Y "etc\\memory_layouts\\windows\\*" ".\\$$DESTDIR\\etc\\memory_layouts\\windows";
+    copy_mem_layouts.extra = copy /Y "share\\memory_layouts\\windows\\*" ".\\$$DESTDIR\\share\\memory_layouts\\windows";
 
     INSTALLS += check_log
     INSTALLS += check_dirs
     INSTALLS += copy_game_data
     INSTALLS += copy_mem_layouts
 }
-else:macx { 
+
+macx { 
     message(Setting up for OSX)
     HEADERS += ./inc/dfinstanceosx.h
     OBJECTIVE_SOURCES += ./src/dfinstanceosx.mm
@@ -76,17 +72,16 @@ else:macx {
     log.path = Contents/MacOS/log
     QMAKE_BUNDLE_DATA += log
 
-    etc.path = Contents/MacOS/etc
-    etc.files += etc/game_data.ini
-    QMAKE_BUNDLE_DATA += etc
+    share.path = Contents/MacOS/share
+    share.files += share/game_data.ini
+    QMAKE_BUNDLE_DATA += share
 
-    layouts.path = Contents/MacOS/etc/memory_layouts/osx
-    layouts.files += etc/memory_layouts/osx/v0.40.04_osx.ini
-    layouts.files += etc/memory_layouts/osx/v0.40.05_osx.ini
-    layouts.files += etc/memory_layouts/osx/v0.40.06_osx.ini
+    layouts.path = Contents/MacOS/share/memory_layouts/osx
+    layouts.files += share/memory_layouts/osx/v040.04.ini
     QMAKE_BUNDLE_DATA += layouts
 }
-else:unix {
+
+unix {
     message(Setting up for Linux)
     HEADERS += inc/dfinstancelinux.h
     SOURCES += src/dfinstancelinux.cpp
@@ -118,12 +113,12 @@ else:unix {
     icon.files += img/dwarftherapist.xpm
     INSTALLS += icon
 
-    memory_layouts.path = /usr/share/dwarftherapist/etc/memory_layouts/linux
-    memory_layouts.files += etc/memory_layouts/linux/*
+    memory_layouts.path = /usr/share/dwarftherapist/memory_layouts/linux
+    memory_layouts.files += share/memory_layouts/linux/*
     INSTALLS += memory_layouts
 
-    game_data.path = /usr/share/dwarftherapist/etc
-    game_data.files += etc/game_data.ini
+    game_data.path = /usr/share/dwarftherapist
+    game_data.files += share/game_data.ini
     INSTALLS += game_data
 }
 
