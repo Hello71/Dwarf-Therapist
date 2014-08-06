@@ -45,7 +45,8 @@ GameDataReader::GameDataReader(QObject *parent)
 {
     QDir working_dir = QDir::current();
     QStringList search_paths;
-    search_paths << QString("%1/game_data.ini").arg(working_dir.path());
+    //search_paths << QString("%1/game_data.ini").arg(working_dir.path());
+    search_paths << QString("%1/share/game_data.ini").arg(QCoreApplication::applicationDirPath());
     search_paths << QString("%1/../share/game_data.ini").arg(QCoreApplication::applicationDirPath());
     search_paths << QString("%1/game_data.ini").arg(DATADIR);
 
