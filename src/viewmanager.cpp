@@ -115,7 +115,8 @@ void ViewManager::reload_views() {
     QStringList view_names;
     QDir working_dir = QDir::current();
     QStringList search_paths;
-    search_paths << QString("%1/default_gridviews.dtg").arg(working_dir.path());
+    //search_paths << QString("%1/default_gridviews.dtg").arg(working_dir.path());
+    search_paths << QString("%1/share/default_gridviews.dtg").arg(QCoreApplication::applicationDirPath());
     search_paths << QString("%1/../share/default_gridviews.dtg").arg(QCoreApplication::applicationDirPath());
     search_paths << QString("%1/default_gridviews.dtg").arg(DATADIR);
 
