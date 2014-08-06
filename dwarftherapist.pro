@@ -34,21 +34,22 @@ win32 {
     SOURCES += src/dfinstancewindows.cpp    
 
     DEFINES += NOMINMAX
+    DEFINES += 'DATADIR=\\"./$$DESTDIR/share\\"'
 
     #setup_files.path = $$DESTDIR
-    #setup_files.extra = ROBOCOPY /MIR "share" ".\\$$DESTDIR\\share";
+    #setup_files.extra = ROBOCOPY /MIR "share" "./$$DESTDIR/share";
 
     check_log.path = $$DESTDIR
-    check_log.extra = if not exist $$DESTDIR\\log mkdir "$$DESTDIR\\log";
+    check_log.extra = if not exist $$DESTDIR/log mkdir "$$DESTDIR/log";
 
     check_dirs.path = $$DESTDIR
-    check_dirs.extra = if not exist $$DESTDIR\\share\\memory_layouts\\windows mkdir "$$DESTDIR\\share\\memory_layouts\\windows";
+    check_dirs.extra = if not exist $$DESTDIR/share/memory_layouts/windows mkdir "$$DESTDIR/share/memory_layouts/windows";
 
     copy_game_data.path = $$DESTDIR
-    copy_game_data.extra = copy /Y "share\\game_data.ini" ".\\$$DESTDIR\\share";
+    copy_game_data.extra = copy /Y "share/game_data.ini" "./$$DESTDIR/share";
 
     copy_mem_layouts.path = $$DESTDIR
-    copy_mem_layouts.extra = copy /Y "share\\memory_layouts\\windows\\*" ".\\$$DESTDIR\\share\\memory_layouts\\windows";
+    copy_mem_layouts.extra = copy /Y "share/memory_layouts/windows/*" "./$$DESTDIR/share/memory_layouts/windows";
 
     INSTALLS += check_log
     INSTALLS += check_dirs
@@ -68,6 +69,7 @@ macx {
     LIBS += -framework Foundation
     LIBS += -framework ApplicationServices
     LIBS += -framework Accelerate
+    DEFINES += 'DATADIR=\\"Contents/MacOS/share\\"'
 
     log.path = Contents/MacOS/log
     QMAKE_BUNDLE_DATA += log
@@ -85,6 +87,7 @@ unix {
     message(Setting up for Linux)
     HEADERS += inc/dfinstancelinux.h
     SOURCES += src/dfinstancelinux.cpp
+    DEFINES += 'DATADIR=\\"/usr/share/dwarftherapist\\"'
 
     message(Setting up for Linux Install)
     target.path = /usr/bin

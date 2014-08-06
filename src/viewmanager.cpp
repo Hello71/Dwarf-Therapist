@@ -113,22 +113,32 @@ void ViewManager::reload_views() {
     QSettings *s = 0x0;
 
     QStringList view_names;
-    QString filename = QString("%1/../share/default_gridviews.dtg").arg(QCoreApplication::applicationDirPath());
-    if(QFile::exists(filename)){
-        s = new QSettings(filename, QSettings::IniFormat);
-        if(s){
-            total_views = s->beginReadArray("gridviews");
-            QList<GridView*> built_in_views;
-            for (int i = 0; i < total_views; ++i) {
-                s->setArrayIndex(i);
-                GridView *gv = GridView::read_from_ini(*s, this);
-                gv->set_is_custom(false); // this is a default view
-                m_views << gv;
-                built_in_views << gv;
-                view_names.append(gv->name());
-            }
-            s->endArray();
+    QDir working_dir = QDir::current();
+    QStringList search_paths;
+    search_paths << QString("%1/default_gridviews.dtg").arg(working_dir.path());
+    search_paths << QString("%1/../share/default_gridviews.dtg").arg(QCoreApplication::applicationDirPath());
+    search_paths << QString("%1/default_gridviews.dtg").arg(DATADIR);
+
+    foreach(QString path, search_paths) {
+        if (QFile::exists(path)) {
+            LOGI << "Found default_gridviews.dtg:" << path;
+            s = new QSettings(path, QSettings::IniFormat);
+            break;
         }
+    }
+
+    if(s){
+        total_views = s->beginReadArray("gridviews");
+        QList<GridView*> built_in_views;
+        for (int i = 0; i < total_views; ++i) {
+            s->setArrayIndex(i);
+            GridView *gv = GridView::read_from_ini(*s, this);
+            gv->set_is_custom(false); // this is a default view
+            m_views << gv;
+            built_in_views << gv;
+            view_names.append(gv->name());
+        }
+        s->endArray();
     }
 
     //packaged default views, if we've already loaded an override for a view, don't include these views

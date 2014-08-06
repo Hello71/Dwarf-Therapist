@@ -43,8 +43,19 @@ QStringList GameDataReader::m_months;
 GameDataReader::GameDataReader(QObject *parent)
     : QObject(parent)
 {
-    QString filename = QString("%1/../share/game_data.ini").arg(QCoreApplication::applicationDirPath());
-    m_data_settings = new QSettings(filename, QSettings::IniFormat);
+    QDir working_dir = QDir::current();
+    QStringList search_paths;
+    search_paths << QString("%1/game_data.ini").arg(working_dir.path());
+    search_paths << QString("%1/../share/game_data.ini").arg(QCoreApplication::applicationDirPath());
+    search_paths << QString("%1/game_data.ini").arg(DATADIR);
+
+    foreach(QString path, search_paths) {
+        if (QFile::exists(path)) {
+            LOGI << "Found game_data.ini:" << path;
+            m_data_settings = new QSettings(path, QSettings::IniFormat);
+            break;
+        }
+    }
 
     build_calendar();
 

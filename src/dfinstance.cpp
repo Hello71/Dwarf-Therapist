@@ -102,6 +102,7 @@ DFInstance::DFInstance(QObject* parent)
 
     QString subdir = LAYOUT_SUBDIR;
     search_paths << QString("%1/../share/memory_layouts/%2").arg(QCoreApplication::applicationDirPath(), subdir);
+    search_paths << QString("%1/memory_layouts/%2").arg(DATADIR, subdir);
 
     TRACE << "Searching for MemoryLayout ini files in the following directories";
     foreach(QString path, search_paths) {
