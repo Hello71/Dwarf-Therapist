@@ -87,7 +87,7 @@ else:macx {
     QMAKE_BUNDLE_DATA += layouts
 }
 
-unix {
+else:unix {
     message(Setting up for Linux)
     HEADERS += inc/dfinstancelinux.h
     SOURCES += src/dfinstancelinux.cpp
